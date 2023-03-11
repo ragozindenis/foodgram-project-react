@@ -105,6 +105,9 @@ class UserViewSet(ModelViewSet):
                 {"detail": "Успешная отписка"},
                 status=status.HTTP_204_NO_CONTENT,
             )
+        return Response(
+            {"detail": "-__-"},
+        )
 
     @action(
         detail=False,
