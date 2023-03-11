@@ -88,6 +88,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 {"detail": "succes deleted recipe from favorite"},
                 status=status.HTTP_204_NO_CONTENT,
             )
+        return Response(
+            {"detail": "-__-"},
+        )
 
     @action(
         detail=True,
@@ -128,6 +131,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 {"detail": "succes deleted recipe from shopping list"},
                 status=status.HTTP_204_NO_CONTENT,
             )
+        return Response(
+            {"detail": "-__-"},
+        )
 
     @action(
         detail=False,
