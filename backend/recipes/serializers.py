@@ -88,7 +88,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                     "Теги не должны повторяеться"
                 )
             else:
-                tags_list.append(tag)
+                return tags_list.append(tag)
         return value
 
     def add_ingredients(self, recipe, ingredients):
