@@ -139,7 +139,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_PAGINATION_CLASS": [
-        "users.pagination.CustomPaginator",
+        "api.pagination.CustomPaginator",
     ],
     "PAGE_SIZE": 6,
     "SEARCH_PARAM": "name",

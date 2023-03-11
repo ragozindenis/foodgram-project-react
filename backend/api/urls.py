@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
-from recipes.views import IngredientViewSet, RecipeViewSet, TagViewSet
 from rest_framework import routers
-from users.views import UserViewSet
+
+from .views import IngredientViewSet, RecipeViewSet, TagViewSet, UserViewSet
 
 router_v1 = routers.DefaultRouter()
 router_v1.register("users", UserViewSet, basename="user")
