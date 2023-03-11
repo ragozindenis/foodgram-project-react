@@ -9,19 +9,15 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
 from users.pagination import CustomPaginator
 from users.permissions import IsAuthorOrReadOnlyPermission
 
 from .filters import RecipeFilter
 from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
-from .serializers import (
-    FavoriteSerializer,
-    IngredientSerializer,
-    RecipeCreateSerializer,
-    RecipeReadSerializer,
-    ShopingCartSerializer,
-    TagSerializer,
-)
+from .serializers import (FavoriteSerializer, IngredientSerializer,
+                          RecipeCreateSerializer, RecipeReadSerializer,
+                          ShopingCartSerializer, TagSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -64,6 +60,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=kwargs["pk"])
 
         if request.method == "POST":
+            if Favorite.objects.filter(
+                user=request.user, recipe=recipe
+            ).exists():
+                return Response(
+                    "Вы уже добавили этот рецепт",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             serializer = FavoriteSerializer(
                 recipe, data=request.data, context={"request": request}
             )
@@ -72,6 +75,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
+            if not Favorite.objects.filter(
+                user=request.user, recipe=recipe
+            ).exists():
+                return Response(
+                    "Вы уже удалили этот рецепт",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             get_object_or_404(
                 Favorite, user=request.user, recipe=recipe
             ).delete()
@@ -89,6 +99,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=kwargs["pk"])
 
         if request.method == "POST":
+            if ShoppingCart.objects.filter(
+                user=request.user, recipe=recipe
+            ).exists():
+                return Response(
+                    "Вы уже добавили этот рецепт",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             serializer = ShopingCartSerializer(
                 recipe, data=request.data, context={"request": request}
             )
@@ -97,6 +114,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
+            if not ShoppingCart.objects.filter(
+                user=request.user, recipe=recipe
+            ).exists():
+                return Response(
+                    "Вы уже удалили этот рецепт",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             get_object_or_404(
                 ShoppingCart, user=request.user, recipe=recipe
             ).delete()

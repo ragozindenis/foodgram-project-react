@@ -3,16 +3,11 @@ import base64
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
 from rest_framework import serializers
+
 from users.serializers import UsersSerializer
 
-from .models import (
-    Favorite,
-    Ingredient,
-    IngredientRecipe,
-    Recipe,
-    ShoppingCart,
-    Tag,
-)
+from .models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                     ShoppingCart, Tag)
 
 
 class Base64ImageField(serializers.ImageField):
@@ -74,6 +69,28 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             "text",
             "cooking_time",
         )
+
+    def validate_ingredients(self, value):
+        ingredients_list = []
+        for ingredient in value:
+            if ingredient["id"] in ingredients_list:
+                raise serializers.ValidationError(
+                    "Ингредиенты не должны повторяеться"
+                )
+            else:
+                ingredients_list.append(ingredient["id"])
+        return value
+
+    def validate_tags(self, value):
+        tags_list = []
+        for tag in value:
+            if tag in tags_list:
+                raise serializers.ValidationError(
+                    "Теги не должны повторяеться"
+                )
+            else:
+                tags_list.append(tag)
+        return value
 
     def add_ingredients(self, recipe, ingredients):
         for ingredient in ingredients:

@@ -30,10 +30,10 @@ class User(AbstractUser):
         return f"{self.first_name} - {self.last_name}"
 
     def get_short_name(self):
-        return self.username
+        return f"{self.username}"
 
     def __str__(self):
-        return self.email
+        return f"{self.email}"
 
 
 class Subscribe(models.Model):
@@ -62,4 +62,4 @@ class Subscribe(models.Model):
         ]
 
     def __str__(self):
-        f"{self.user} subscribe {self.author}"
+        return f"{self.user.username} subscribe {self.author.username}"

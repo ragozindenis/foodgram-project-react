@@ -8,12 +8,9 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Subscribe, User
 from .pagination import CustomPaginator
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
-from .serializers import (
-    ChangePasswordSerializer,
-    UsersSerializer,
-    UsersSubscribeSerializer,
-    UserSubscriptionsSerializer,
-)
+from .serializers import (ChangePasswordSerializer, UsersSerializer,
+                          UsersSubscribeSerializer,
+                          UserSubscriptionsSerializer)
 
 
 class UserViewSet(ModelViewSet):
@@ -79,12 +76,19 @@ class UserViewSet(ModelViewSet):
     )
     def subscribe(self, request, **kwargs):
         author = get_object_or_404(User, id=kwargs["pk"])
-        if request.user == author:
-            return Response(
-                "Нельзя подписаться на самого себя",
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         if request.method == "POST":
+            if Subscribe.objects.filter(
+                user=request.user, author=author
+            ).exists():
+                return Response(
+                    "Вы уже подписаны на данного пользователя",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if request.user == author:
+                return Response(
+                    "Нельзя подписаться на самого себя",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             serializer = UsersSubscribeSerializer(
                 author, data=request.data, context={"request": request}
             )

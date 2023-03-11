@@ -1,6 +1,8 @@
+from colorfield.fields import ColorField
 from django.core import validators
 from django.core.validators import MinValueValidator
 from django.db import models
+
 from users.models import User
 
 
@@ -20,7 +22,7 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField("Название тега", max_length=200, unique=True)
-    color = models.CharField(
+    color = ColorField(
         "Цвет",
         max_length=7,
         unique=True,
@@ -62,12 +64,13 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag, related_name="tags", verbose_name="Тэги"
     )
-    cooking_time = models.IntegerField(
-        validators=[MinValueValidator(1)], verbose_name="Cooking time"
+    cooking_time = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1, message="Ошибка валидации")],
+        verbose_name="Cooking time",
     )
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ("-id",)
         verbose_name = "Рецепт"
 
     def __str__(self):
