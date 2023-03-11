@@ -81,14 +81,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     "Вы уже удалили этот рецепт",
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            else:
-                get_object_or_404(
-                    Favorite, user=request.user, recipe=recipe
-                ).delete()
-                return Response(
-                    {"detail": "succes deleted recipe from favorite"},
-                    status=status.HTTP_204_NO_CONTENT,
-                )
+            get_object_or_404(
+                Favorite, user=request.user, recipe=recipe
+            ).delete()
+            return Response(
+                {"detail": "succes deleted recipe from favorite"},
+                status=status.HTTP_204_NO_CONTENT,
+            )
 
     @action(
         detail=True,
@@ -106,15 +105,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     "Вы уже добавили этот рецепт",
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            else:
-                serializer = ShopingCartSerializer(
-                    recipe, data=request.data, context={"request": request}
-                )
-                serializer.is_valid(raise_exception=True)
-                ShoppingCart.objects.create(user=request.user, recipe=recipe)
-                return Response(
-                    serializer.data, status=status.HTTP_201_CREATED
-                )
+
+            serializer = ShopingCartSerializer(
+                recipe, data=request.data, context={"request": request}
+            )
+            serializer.is_valid(raise_exception=True)
+            ShoppingCart.objects.create(user=request.user, recipe=recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
             if not ShoppingCart.objects.filter(

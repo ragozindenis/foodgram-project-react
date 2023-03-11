@@ -90,15 +90,12 @@ class UserViewSet(ModelViewSet):
                     "Нельзя подписаться на самого себя",
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            else:
-                serializer = UsersSubscribeSerializer(
-                    author, data=request.data, context={"request": request}
-                )
-                serializer.is_valid(raise_exception=True)
-                Subscribe.objects.create(user=request.user, author=author)
-                return Response(
-                    serializer.data, status=status.HTTP_201_CREATED
-                )
+            serializer = UsersSubscribeSerializer(
+                author, data=request.data, context={"request": request}
+            )
+            serializer.is_valid(raise_exception=True)
+            Subscribe.objects.create(user=request.user, author=author)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
             get_object_or_404(
