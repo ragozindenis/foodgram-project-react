@@ -76,9 +76,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     "Ингредиенты не должны повторяеться"
                 )
-            else:
-                ingredients_list.append(ingredient["id"])
-        return value
+            ingredients_list.append(ingredient["id"])
+            return value
 
     def validate_tags(self, value):
         tags_list = []
@@ -87,9 +86,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     "Теги не должны повторяеться"
                 )
-            else:
-                return tags_list.append(tag)
-        return value
+            tags_list.append(tag)
+            return value
 
     def add_ingredients(self, recipe, ingredients):
         for ingredient in ingredients:
