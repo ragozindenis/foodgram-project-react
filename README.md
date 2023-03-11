@@ -1,3 +1,3 @@
 # praktikum_new_diplom
 
-test deploy
+test deploy 2
