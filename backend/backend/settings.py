@@ -137,9 +137,9 @@ STATIC_URL = "/static/admin/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static/admin")
 
-MEDIA_URL = "/media/"
+MEDIA_URL = "/media/admin/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/admin")
 
 AUTH_USER_MODEL = "users.User"
 
