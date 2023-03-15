@@ -27,8 +27,6 @@ services:
     restart: always
     volumes:
       - ./frontend/:/app/result_build/
-    depends_on:
-      - backend
 
   nginx:
     container_name: nginx
@@ -40,11 +38,10 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./frontend/build:/usr/share/nginx/html/
       - ./docs/:/usr/share/nginx/html/api/docs/
-      - static_value:/var/html/static/
-      - media_value:/var/html/media/
+      - static_value:/usr/share/nginx/html/staticfile/
+      - media_value:/usr/share/nginx/html/mediafile/
     depends_on:
       - backend
-      - frontend
 
 volumes:
   data_value:

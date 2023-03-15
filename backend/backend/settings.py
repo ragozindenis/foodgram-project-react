@@ -132,13 +132,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = "/static/admin/"
+STATIC_URL = "/staticfile/"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static/admin")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfile")
 
-MEDIA_URL = "/media/"
+MEDIA_URL = "/mediafile/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "mediafile")
 
 AUTH_USER_MODEL = "users.User"
 
