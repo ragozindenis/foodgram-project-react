@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     "django_filters",
     "djoser",
     "colorfield",
-    "versatileimagefield",
 ]
 
 MIDDLEWARE = [
