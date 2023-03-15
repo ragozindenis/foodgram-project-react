@@ -14,8 +14,8 @@ services:
     image: bonbonb/backend:latest
     restart: always
     volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
+      - static_value:/app/staticfile/
+      - media_value:/app/mediafile/
     depends_on:
       - db
     env_file:
@@ -30,7 +30,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:1.21.3
+    image: nginx:1.21.3-alpine
     restart: always
     ports:
       - "80:80"
