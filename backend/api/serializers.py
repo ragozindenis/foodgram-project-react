@@ -2,20 +2,26 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
 from rest_framework import serializers
 from users.models import Subscribe, User
 
 
-class Base64ToImage(serializers.Field):
-    def to_representation(self, value):
-        return value
-
+class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
-        format, imgstr = data.split(";base64,")
-        ext = format.split("/")[-1]
-        return ContentFile(base64.b64decode(imgstr), name="temp." + ext)
+        if isinstance(data, str) and data.startswith("data:image"):
+            format, imgstr = data.split(";base64,")
+            ext = format.split("/")[-1]
+            data = ContentFile(base64.b64decode(imgstr), name="temp." + ext)
+
+        return super().to_internal_value(data)
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -98,7 +104,7 @@ class UsersSubscribeSerializer(serializers.Serializer):
 
 
 class RecipeAuthorShortSerializer(serializers.ModelSerializer):
-    image = Base64ToImage(read_only=True)
+    image = Base64ImageField(read_only=True)
     name = serializers.ReadOnlyField()
     cooking_time = serializers.ReadOnlyField()
 
@@ -178,7 +184,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
-    image = Base64ToImage(required=True)
+    image = Base64ImageField(required=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
@@ -264,7 +270,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(RecipeCreateSerializer):
     author = UsersSerializer(read_only=True)
     ingredients = serializers.SerializerMethodField()
-    image = Base64ToImage()
+    image = Base64ImageField(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
 
     def get_ingredients(self, obj):
