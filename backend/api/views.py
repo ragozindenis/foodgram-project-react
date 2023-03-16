@@ -42,9 +42,10 @@ class UserViewSet(ModelViewSet):
             permission_classes = [
                 AllowAny,
             ]
-        elif self.action == "retrieve":
+        elif self.action == "update":
             permission_classes = [
                 IsAuthenticated,
+                IsAuthorOrReadOnlyPermission,
             ]
         else:
             permission_classes = [
