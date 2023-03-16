@@ -275,13 +275,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         fields = ["Name", "Measurement_unit", "Amount"]
         with open("Your_ingredients.csv", "w") as file:
-            write = csv.writer(file)
-            write.writerow(fields)
-            write.writerows(ingredients)
-            response = HttpResponse(file, content_type="application/csv")
-            filename = "Your_ingredients.csv"
+            response = HttpResponse(content_type="text/csv")
             response[
                 "Content-Disposition"
-            ] = 'attachment; filename="{}"'.format(filename)
+            ] = 'attachment; filename="export.csv"'
+            write = csv.writer(response, file)
+            write.writerow(fields)
+            write.writerows(ingredients)
 
             return response
