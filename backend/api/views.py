@@ -38,11 +38,11 @@ class UserViewSet(ModelViewSet):
             permission_classes = [
                 IsAdminOrReadOnly,
             ]
-        elif self.action == "create":
+        if self.action == "create":
             permission_classes = [
                 AllowAny,
             ]
-        elif self.action == "update":
+        if self.action == "update":
             permission_classes = [
                 IsAuthenticated,
                 IsAuthorOrReadOnlyPermission,
