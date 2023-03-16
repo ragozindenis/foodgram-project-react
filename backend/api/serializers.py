@@ -2,8 +2,14 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
 from rest_framework import serializers
 from users.models import Subscribe, User
 
@@ -272,7 +278,7 @@ class RecipeReadSerializer(RecipeCreateSerializer):
             "id",
             "name",
             "measurement_unit",
-            "ingredient_recipe__amount",
+            "recipe__ingredients_recipe__amount",
         )
 
     class Meta:
