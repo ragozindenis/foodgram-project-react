@@ -272,7 +272,7 @@ class RecipeReadSerializer(RecipeCreateSerializer):
             "id",
             "name",
             "measurement_unit",
-            "amount",
+            "ingredient_recipe__amount",
         )
 
     class Meta:
