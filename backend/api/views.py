@@ -37,11 +37,11 @@ class UserViewSet(ModelViewSet):
         """
         if self.action == "list":
             permission_classes = [IsAuthorOrReadOnlyPermission]
-        if self.action == "create":
+        elif self.action == "create":
             permission_classes = [IsCreationOrIsAuthenticated]
-        if self.action == "partial_update":
+        elif self.action == "partial_update":
             permission_classes = [IsAuthorOrReadOnlyPermission]
-        if self.action == "destroy":
+        elif self.action == "destroy":
             permission_classes = [IsAuthorOrReadOnlyPermission]
         else:
             permission_classes = [IsAdminOrReadOnly]
