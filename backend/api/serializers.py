@@ -224,6 +224,15 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 amount=ingredient.get("amount"),
                 recipe=recipe,
             )
+        return ingredients
+
+    def get_ingredients(self, obj):
+        return obj.ingredients.values(
+            "id",
+            "name",
+            "measurement_unit",
+            "ingredients_recipe__amount",
+        )
 
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")
