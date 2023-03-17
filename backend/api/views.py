@@ -194,7 +194,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
             serializer.is_valid(raise_exception=True)
             Favorite.objects.create(user=request.user, recipe=recipe)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                {"Success": "Успешное добавление рецепта в избранное"},
+                status=status.HTTP_201_CREATED,
+                headers=headers,
+            )
 
         if request.method == "DELETE":
             if not Favorite.objects.filter(
@@ -208,7 +213,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 Favorite, user=request.user, recipe=recipe
             ).delete()
             return Response(
-                {"detail": "succes deleted recipe from favorite"},
+                {"detail": "Успешное удаление рецепта из избранного"},
                 status=status.HTTP_204_NO_CONTENT,
             )
         return Response(
@@ -237,7 +242,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
             serializer.is_valid(raise_exception=True)
             ShoppingCart.objects.create(user=request.user, recipe=recipe)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                {"Success": "Успешное добавление рецепта в список покупок"},
+                status=status.HTTP_201_CREATED,
+                headers=headers,
+            )
 
         if request.method == "DELETE":
             if not ShoppingCart.objects.filter(
@@ -251,7 +261,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 ShoppingCart, user=request.user, recipe=recipe
             ).delete()
             return Response(
-                {"detail": "succes deleted recipe from shopping list"},
+                {"detail": "Успешное удаление рецепта из списка покупок"},
                 status=status.HTTP_204_NO_CONTENT,
             )
         return Response(

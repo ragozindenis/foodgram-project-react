@@ -298,17 +298,11 @@ class FavoriteSerializer(serializers.Serializer):
         model = Favorite
         fields = ("user", "recipe")
 
-    def validate(self, data):
-        return data
-
 
 class ShopingCartSerializer(serializers.Serializer):
     class Meta:
         model = ShoppingCart
         fields = ("user", "recipe")
-
-    def validate(self, data):
-        return data
 
 
 class GetShoppingCartSerializer(serializers.ModelSerializer):
