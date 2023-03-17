@@ -2,6 +2,7 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
+from django.db.models import F
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
 from rest_framework import serializers
@@ -231,7 +232,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "measurement_unit",
-            "ingredients_recipe__amount",
+            amount=F("ingredients_recipe__amount"),
         )
 
     def create(self, validated_data):
