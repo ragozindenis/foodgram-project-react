@@ -22,12 +22,26 @@ class TagsAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipesAdmin(admin.ModelAdmin):
-    list_display = ["pk", "author", "name", "text", "cooking_time"]
+    list_display = [
+        "pk",
+        "author",
+        "name",
+        "text",
+        "cooking_time",
+        "in_favorites",
+    ]
+    readonly_fields = [
+        "in_favorites",
+    ]
     search_fields = ["pk", "author", "name", "tags"]
     inlines = [
         IngredientInline,
     ]
     exclude = ("ingredients",)
+
+    @admin.display(description="Favorite")
+    def in_favorites(self, obj):
+        return obj.favorite_recipe.count()
 
 
 @admin.register(Ingredient)
