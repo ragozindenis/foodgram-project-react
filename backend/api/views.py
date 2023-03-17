@@ -15,7 +15,7 @@ from users.models import Subscribe, User
 
 from .filters import RecipeFilter
 from .pagination import CustomPaginator
-from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
+from .permissions import IsAuthorOrReadOnlyPermission
 from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
                           RecipeReadSerializer, ShopingCartSerializer,
@@ -34,16 +34,10 @@ class UserViewSet(ModelViewSet):
         Instantiates and returns the list
         of permissions that this view requires.
         """
-        if self.action == "list":
-            permission_classes = [IsAuthorOrReadOnlyPermission]
         if self.action == "create":
             permission_classes = [AllowAny]
-        if self.action == "partial_update":
-            permission_classes = [IsAuthorOrReadOnlyPermission]
-        if self.action == "destroy":
-            permission_classes = [IsAuthorOrReadOnlyPermission]
         else:
-            permission_classes = [IsAdminOrReadOnly]
+            permission_classes = [IsAuthorOrReadOnlyPermission]
         return [permission() for permission in permission_classes]
 
     @action(
