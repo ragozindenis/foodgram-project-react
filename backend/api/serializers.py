@@ -227,14 +227,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
         return ingredients
 
-    def get_ingredients(self, obj):
-        return obj.ingredients.values(
-            "id",
-            "name",
-            "measurement_unit",
-            amount=F("ingredients_recipe__amount"),
-        )
-
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")
         tags = validated_data.pop("tags")
@@ -282,7 +274,7 @@ class RecipeReadSerializer(RecipeCreateSerializer):
             "id",
             "name",
             "measurement_unit",
-            "ingredients_recipe__amount",
+            amount=F("ingredients_recipe__amount"),
         )
 
     class Meta:
