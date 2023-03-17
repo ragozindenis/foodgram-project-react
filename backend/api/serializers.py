@@ -242,7 +242,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.tags.set(tags)
         self.add_ingredients(instance, ingredients)
         instance.save()
-        return
+        return instance
 
     def get_is_favorited(self, obj):
         return (
