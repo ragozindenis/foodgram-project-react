@@ -7,6 +7,8 @@ from users.models import Subscribe, User
 
 class IngredientInline(admin.TabularInline):
     model = Recipe.ingredients.through
+    extra = 0
+    min_num = 1
     formset = RequiredInlineFormSet
 
 

@@ -1,9 +1,12 @@
-import csv
+import io
 
 from django.db.models import Sum
-from django.http.response import HttpResponse
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen.canvas import Canvas
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
@@ -283,13 +286,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .distinct()
             .annotate(total=Sum("recipe__ingredients_recipe__amount"))
         )
-        fields = ["Name", "Measurement_unit", "Amount"]
-        with open("Your_ingredients.csv", "w") as file:
-            response = HttpResponse(content_type="text/csv")
-            response[
-                "Content-Disposition"
-            ] = 'attachment; filename="export.csv"'
-            write = csv.writer(response, file)
-            write.writerow(fields)
-            write.writerows(ingredients)
-            return response
+        buffer = io.BytesIO()
+        font = TTFont("Arial", "arial.ttf")
+        pdfmetrics.registerFont(font)
+        s = Canvas(buffer)
+        s.setPageSize((700, 800))
+        s.setFont("Arial", 35)
+
+        start_y = 650
+        start_x = 10
+        s.drawString(10, 700, "Ваш список ингредиентов:")
+        s.setFont("Arial", 20)
+        for ing in ingredients:
+            start_y -= 50
+            s.drawString(
+                start_x,
+                start_y,
+                "{} {} {}.".format(*ing),
+            )
+        s.showPage()
+        s.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename="hello.pdf")
