@@ -295,13 +295,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         pdfmetrics.registerFont(font)
         s = Canvas(buffer)
-        s.setPageSize((700, 800))
         s.setFont("Arial", 35)
-
-        start_y = 650
+        s.setPageSize((650, 500))
+        start_y = 400
         start_x = 10
-        s.drawString(10, 700, "Ваш список ингредиентов:")
+        s.drawString(10, 450, "Ваш список ингредиентов:")
         s.setFont("Arial", 20)
+        page = 1
         for ing in ingredients:
             start_y -= 50
             s.drawString(
@@ -309,7 +309,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 start_y,
                 "{}, мера - {}, количество - {}.".format(*ing),
             )
-        s.showPage()
+            if start_y == 50:
+                page += 1
+                s.showPage()
+                s.setFont("Arial", 35)
+                s.drawString(10, 450, f"Страница - {page}")
+                s.setFont("Arial", 20)
+                start_y = 400
         s.save()
         buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename="hello.pdf")
+        return FileResponse(
+            buffer, as_attachment=True, filename="Shopping_list.pdf"
+        )
