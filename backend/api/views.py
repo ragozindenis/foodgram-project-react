@@ -1,4 +1,5 @@
 import io
+import os
 
 from django.db.models import Sum
 from django.http import FileResponse
@@ -287,7 +288,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .annotate(total=Sum("recipe__ingredients_recipe__amount"))
         )
         buffer = io.BytesIO()
-        font = TTFont("Arial", "arial.ttf")
+        path = "data"
+        font = TTFont(
+            "Arial",
+            os.path.join(path, "Arial.ttf"),
+        )
         pdfmetrics.registerFont(font)
         s = Canvas(buffer)
         s.setPageSize((700, 800))
@@ -302,7 +307,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             s.drawString(
                 start_x,
                 start_y,
-                "{} {} {}.".format(*ing),
+                "{}, мера - {}, количество - {}.".format(*ing),
             )
         s.showPage()
         s.save()
