@@ -47,7 +47,7 @@ class UserViewSet(ModelViewSet):
             ]
         elif self.action == "retrieve":
             permission_classes = [
-                IsAuthenticated,
+                IsAdminOrReadOnly,
             ]
         else:
             permission_classes = [

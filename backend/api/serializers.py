@@ -46,12 +46,14 @@ class UsersSerializer(serializers.ModelSerializer):
         return user
 
     def get_is_subscribed(self, obj):
-        return (
-            self.context.get("request").user.is_authenticated
-            and Subscribe.objects.filter(
-                author=obj, user=self.context.get("request").user
-            ).exists()
-        )
+        if (
+            self.context.get("request") is None
+            or self.context.get("request").user.is_anonymous
+        ):
+            return False
+        return Subscribe.objects.filter(
+            author=obj, user=self.context.get("request").user
+        ).exists()
 
     class Meta:
         model = User
