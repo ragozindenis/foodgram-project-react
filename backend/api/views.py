@@ -18,11 +18,11 @@ from api.filters import RecipeFilter
 from api.pagination import CustomPaginator
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
 from api.serializers import (ChangePasswordSerializer, FavoriteSerializer,
-                          IngredientSerializer, RecipeCreateSerializer,
-                          RecipeReadSerializer, ShopingCartSerializer,
-                          TagSerializer, UsersSerializer,
-                          UsersSubscribeSerializer,
-                          UserSubscriptionsSerializer)
+                            IngredientSerializer, RecipeCreateSerializer,
+                            RecipeReadSerializer, ShopingCartSerializer,
+                            TagSerializer, UsersSerializer,
+                            UsersSubscribeSerializer,
+                            UserSubscriptionsSerializer)
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscribe, User
 
@@ -287,8 +287,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .annotate(total=Sum("recipe__ingredients_recipe__amount"))
         )
         buffer = io.BytesIO()
-        Font = TTFont("Arial", "arial.ttf")
-        pdfmetrics.registerFont(Font)
+        font = TTFont("Arial", "arial.ttf")
+        pdfmetrics.registerFont(font)
         s = Canvas(buffer)
         s.setPageSize((700, 800))
         s.setFont("Arial", 35)
