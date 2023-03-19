@@ -3,9 +3,10 @@ import base64
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
 from django.db.models import F
+from rest_framework import exceptions, serializers
+
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
-from rest_framework import serializers
 from users.models import Subscribe, User
 
 
@@ -39,17 +40,18 @@ class UsersSerializer(serializers.ModelSerializer):
         try:
             user.set_password(validated_data["password"])
             user.save()
-        except KeyError:
-            pass
+        except exceptions.ValidationError as error:
+            raise serializers.ValidationError(error.messages)
 
         return user
 
     def get_is_subscribed(self, obj):
-        request = self.context.get("request")
-        if request is None or request.user.is_anonymous:
-            return False
-        user = request.user
-        return Subscribe.objects.filter(author=obj, user=user).exists()
+        return (
+            self.context.get("request").user.is_authenticated
+            and Subscribe.objects.filter(
+                author=obj, user=self.context.get("request").user
+            ).exists()
+        )
 
     class Meta:
         model = User
@@ -127,11 +129,12 @@ class UserSubscriptionsSerializer(serializers.ModelSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        request = self.context.get("request")
-        if request is None or request.user.is_anonymous:
-            return False
-        user = request.user
-        return Subscribe.objects.filter(author=obj, user=user).exists()
+        return (
+            self.context.get("request").user.is_authenticated
+            and Subscribe.objects.filter(
+                author=obj, user=self.context.get("request").user
+            ).exists()
+        )
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
@@ -308,4 +311,4 @@ class ShopingCartSerializer(serializers.Serializer):
 class GetShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingCart
-        fields = ["recipe"]
+        fields = ("recipe",)

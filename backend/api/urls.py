@@ -2,8 +2,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 
-from .custom_routers import PutMethodNotAllow
-from .views import IngredientViewSet, RecipeViewSet, TagViewSet, UserViewSet
+from api.custom_routers import PutMethodNotAllow
+from api.views import IngredientViewSet, RecipeViewSet, TagViewSet, UserViewSet
 
 router_no_put_v1 = PutMethodNotAllow()
 router_no_put_v1.register("users", UserViewSet, basename="user")

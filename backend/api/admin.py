@@ -1,10 +1,13 @@
 from django.contrib import admin
+
+from api.form import RequiredInlineFormSet, SubcribeForm
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscribe, User
 
 
 class IngredientInline(admin.TabularInline):
     model = Recipe.ingredients.through
+    formset = RequiredInlineFormSet
 
 
 @admin.register(User)
@@ -39,7 +42,7 @@ class RecipesAdmin(admin.ModelAdmin):
     ]
     exclude = ("ingredients",)
 
-    @admin.display(description="Favorite")
+    @admin.display(description="Избранное")
     def in_favorites(self, obj):
         return obj.favorite_recipe.count()
 
@@ -66,3 +69,4 @@ class ShoppingCartAdmin(admin.ModelAdmin):
 class SubscribesAdmin(admin.ModelAdmin):
     list_display = ["pk", "user", "author", "created"]
     search_fields = ["pk", "user", "author", "created"]
+    form = SubcribeForm

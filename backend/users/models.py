@@ -26,6 +26,11 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
+    class Meta:
+        ordering = ("-id",)
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+
     def get_full_name(self):
         return f"{self.first_name} - {self.last_name}"
 

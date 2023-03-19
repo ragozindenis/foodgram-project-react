@@ -9,3 +9,4 @@ psycopg2-binary==2.9
 asgiref==3.3.2
 pytz==2020.1
 sqlparse==0.3.1
+reportlab==3.6.12

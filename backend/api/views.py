@@ -1,27 +1,30 @@
-import csv
+import io
 
 from django.db.models import Sum
-from django.http.response import HttpResponse
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen.canvas import Canvas
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from users.models import Subscribe, User
 
-from .filters import RecipeFilter
-from .pagination import CustomPaginator
-from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
-from .serializers import (ChangePasswordSerializer, FavoriteSerializer,
+from api.filters import RecipeFilter
+from api.pagination import CustomPaginator
+from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
+from api.serializers import (ChangePasswordSerializer, FavoriteSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
                           RecipeReadSerializer, ShopingCartSerializer,
                           TagSerializer, UsersSerializer,
                           UsersSubscribeSerializer,
                           UserSubscriptionsSerializer)
+from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
+from users.models import Subscribe, User
 
 
 class UserViewSet(ModelViewSet):
@@ -283,14 +286,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .distinct()
             .annotate(total=Sum("recipe__ingredients_recipe__amount"))
         )
-        fields = ["Name", "Measurement_unit", "Amount"]
-        with open("Your_ingredients.csv", "w") as file:
-            response = HttpResponse(content_type="text/csv")
-            response[
-                "Content-Disposition"
-            ] = 'attachment; filename="export.csv"'
-            write = csv.writer(response, file)
-            write.writerow(fields)
-            write.writerows(ingredients)
+        buffer = io.BytesIO()
+        Font = TTFont("Arial", "arial.ttf")
+        pdfmetrics.registerFont(Font)
+        s = Canvas(buffer)
+        s.setPageSize((700, 800))
+        s.setFont("Arial", 35)
 
-            return response
+        start_y = 650
+        start_x = 10
+        s.drawString(10, 700, "Ваш список ингредиентов:")
+        s.setFont("Arial", 20)
+        for ing in ingredients:
+            start_y -= 50
+            s.drawString(
+                start_x,
+                start_y,
+                "{} {} {}.".format(*ing),
+            )
+        s.showPage()
+        s.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename="hello.pdf")
