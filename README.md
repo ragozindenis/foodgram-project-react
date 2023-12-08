@@ -117,13 +117,4 @@ sudo docker-compose exec backend python manage.py load_json_ingredients
 Slug: breakfast 
 
 ```
-## Проект можно посмотреть по адрессу:
-```
-130.193.39.207
-```
-> логин и пароль администратора:
-```
-admin@example.com
-admin12345
-```
 
